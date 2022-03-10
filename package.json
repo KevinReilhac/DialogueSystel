@@ -1,0 +1,28 @@
+{
+  "name": "com.hilo.dialogue_system",
+  "version": "1.0.0",
+  "displayName": "DialogueSystem",
+  "description": "This is a simple dialogue display system",
+  "unity": "2020.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "keywords": [],
+  "author": {
+    "name": "Unity",
+    "email": "unity@example.com",
+    "url": "https://www.unity3d.com"
+  },
+  "dependencies": {
+    "com.unity.textmeshpro": ""
+  },
+  "samples": [
+    {
+      "displayName": "Example",
+      "description": "Contains TMPro and UnityText prefab",
+      "path": "Samples/Example"
+    }
+  ],
+  "hideInEditor": false
+}
