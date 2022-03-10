@@ -1,6 +1,6 @@
 {
   "name": "com.hilo.dialogue_system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "DialogueSystem",
   "description": "This is a simple dialogue display system",
   "unity": "2020.1",
