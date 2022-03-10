@@ -8,6 +8,9 @@ Dialogue system is a simple package for making dialogue
 [![Add-package.gif](https://i.postimg.cc/g21MpzZh/Add-package.gif)](https://postimg.cc/3kCjCH9r)
 
 paste git url in your package manager.
+```
+git@bitbucket.org:kreilhac/unity-dialogue-system.git
+```
 
 ## Usage
 
