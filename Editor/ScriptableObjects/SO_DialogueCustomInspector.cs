@@ -29,7 +29,7 @@ namespace Hilo.DialogueSystem
 			for (int i = 0; i < dialogueObject.pages.Count; i++)
 			{
 				EditorGUILayout.LabelField(string.Format("Page {0}/{1}", i + 1, dialogueObject.pages.Count));
-				PageDrawer(dialogueObject.pages[i], dialogueObject);
+				PageDrawer(dialogueObject, dialogueObject.pages[i]);
 				EditorExtentions.DrawUILine(Color.black);
 			}
 
@@ -37,35 +37,39 @@ namespace Hilo.DialogueSystem
 				dialogueObject.pages.Add(new Page());
 		}
 
-		private void PageDrawer(Page page, SO_Dialogue dialogue)
+		private void PageDrawer(SO_Dialogue dialogue, Page page)
 		{
 			page.text = EditorGUILayout.TextArea(page.text, GUILayout.MinHeight(100));
 			int pageIndex = dialogue.pages.IndexOf(page);
 
-			DrawCustomButtonToggles(page);
-			DrawCustomButtonTexts(page);
+			EditorExtentions.Header("Answers");
+			DrawAnswers(dialogue, page);
 
 			page.clip = EditorGUILayout.ObjectField("AudioClip", page.clip, typeof(AudioClip), false) as AudioClip;
 			if (GUILayout.Button("Remove") && DeleteConfirmation(page.text))
 				dialogue.pages.Remove(page);
 		}
 
-		private void DrawCustomButtonToggles(Page page)
+		private void DrawAnswers(SO_Dialogue dialogue, Page page)
 		{
-			GUILayout.BeginHorizontal();
-			page.hasCustomPreviousButtonText = EditorGUILayout.Toggle("Custom previous button", page.hasCustomPreviousButtonText);
-			page.hasCustomNextButtonText = EditorGUILayout.Toggle("Custom next button", page.hasCustomNextButtonText);
-			GUILayout.EndHorizontal();
+			List<Answer> answers = new List<Answer>(page.answers);
+			foreach (Answer answer in answers)
+				DrawAnswer(dialogue, page, answer);
+			EditorGUILayout.Space();
+			if (GUILayout.Button("Add answer"))
+				page.answers.Add(new Answer("custom", Answer.AnswerAction.None));
 		}
 
-		private void DrawCustomButtonTexts(Page page)
+		private void DrawAnswer(SO_Dialogue dialogue, Page page, Answer answer)
 		{
-			GUILayout.BeginHorizontal();
-			if (page.hasCustomPreviousButtonText)
-				page.customPreviousButtonText = EditorGUILayout.TextField(page.customPreviousButtonText);
-			if (page.hasCustomNextButtonText)
-				page.customNextButtonText = EditorGUILayout.TextField(page.customNextButtonText);
-			GUILayout.EndHorizontal();
+			EditorGUILayout.BeginHorizontal();
+			answer.text = GUILayout.TextField(answer.text, GUILayout.Width(300f));
+			answer.action = (Answer.AnswerAction)EditorGUILayout.EnumPopup(answer.action);
+			if (answer.action == Answer.AnswerAction.SetPage)
+				answer.setPageValue = Mathf.Clamp(EditorGUILayout.IntField(answer.setPageValue, GUILayout.Width(50f)), 0, dialogue.pages.Count - 1);
+			if (GUILayout.Button("Delete", GUILayout.Width(100f)))
+				page.answers.Remove(answer);
+			EditorGUILayout.EndHorizontal();
 		}
 
 		private bool DeleteConfirmation(string pageText)

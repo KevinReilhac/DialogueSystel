@@ -14,32 +14,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pages:
   - text: This is an exemple of the Hilo Dialogue System.
-    hasCustomNextButtonText: 0
-    customNextButtonText: 
-    hasCustomPreviousButtonText: 0
-    customPreviousButtonText: 
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 1
+      setPageValue: 0
     clip: {fileID: 0}
   - text: You can do a lot of stuff with it.
-    hasCustomNextButtonText: 0
-    customNextButtonText: 
-    hasCustomPreviousButtonText: 0
-    customPreviousButtonText: 
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 1
+      setPageValue: 0
+    - text: D
+      action: 0
+      setPageValue: 0
     clip: {fileID: 0}
   - text: Like spawning objects.
-    hasCustomNextButtonText: 0
-    customNextButtonText: next
-    hasCustomPreviousButtonText: 0
-    customPreviousButtonText: previous
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 1
+      setPageValue: 0
     clip: {fileID: 0}
   - text: Or playing sounds or voices
-    hasCustomNextButtonText: 1
-    customNextButtonText: Wow a custom button
-    hasCustomPreviousButtonText: 0
-    customPreviousButtonText: previous
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 1
+      setPageValue: 0
     clip: {fileID: 0}
   - text: BOOM!
-    hasCustomNextButtonText: 0
-    customNextButtonText: next
-    hasCustomPreviousButtonText: 0
-    customPreviousButtonText: previous
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 1
+      setPageValue: 0
     clip: {fileID: 8300000, guid: 6bdd0fcf672b41c4aa3b4698ae8cded4, type: 3}
+  - text: iugyutuygyuiyiu
+    answers:
+    - text: "Pr\xE9cedent"
+      action: 2
+      setPageValue: 0
+    - text: Suivant
+      action: 3
+      setPageValue: 3
+    - text: custom
+      action: 0
+      setPageValue: 0
+    clip: {fileID: 0}

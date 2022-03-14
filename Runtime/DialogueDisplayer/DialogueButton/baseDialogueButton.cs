@@ -25,9 +25,24 @@ namespace Hilo.DialogueSystem
 		[SerializeField] protected T text = null;
 		[SerializeField] private Button button = null;
 
-		public void SetCallback(UnityAction onClickCallback)
+		private UnityEvent<Answer> onClick = new UnityEvent<Answer>();
+
+		private Answer answer = null;
+
+		private void Awake()
 		{
-			button.onClick.AddListener(onClickCallback);
+			button.onClick.AddListener(() => onClick.Invoke(answer));
+		}
+
+		public void Setup(Answer answer)
+		{
+			this.answer = answer;
+			SetText(answer.text);
+		}
+
+		public UnityEvent<Answer> OnClick
+		{
+			get => onClick;
 		}
 
 		abstract public void SetText(string textValue);

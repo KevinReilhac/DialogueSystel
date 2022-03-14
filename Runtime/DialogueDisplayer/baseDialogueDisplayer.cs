@@ -29,17 +29,17 @@ namespace Hilo.DialogueSystem
 
 		[Header("Settings")]
 		[SerializeField] private SO_Dialogue dialogue = null;
-		[SerializeField] private string defaultNextText = "Suivant";
-		[SerializeField] private string defaultPreviousText = "Précédent";
 		[SerializeField] private OnEndDialogueType endDialogueType = OnEndDialogueType.Disable;
+		[Header("Prefabs")]
+		[SerializeField] private baseDialogueButton<T> buttonPrefab = null;
 		[Header("Events")]
 		[SerializeField] private UnityEvent onEndDialogue = null;
 		[SerializeField, HideInInspector] private GenericDictionary<int, UnityEvent> pageEvents = null;
+		[SerializeField, HideInInspector] private GenericDictionary<int, List<UnityEvent>> answerEvents = null;
 		[Header("References")]
 		[SerializeField] protected T text = null;
-		[SerializeField] private baseDialogueButton<T> previousButton = null;
-		[SerializeField] private baseDialogueButton<T> nextButton = null;
 		[SerializeField] private AudioSource audioSource = null;
+		[SerializeField] private Transform buttonsParent = null;
 
 		private int currentPage = 0;
 
@@ -51,8 +51,6 @@ namespace Hilo.DialogueSystem
 			if (audioSource == null && IsPagesHaveAudio())
 				audioSource = gameObject.AddComponent<AudioSource>();
 
-			previousButton.SetCallback(() => NextPage(-1));
-			nextButton.SetCallback(() => NextPage(1));
 			ShowPage(0);
 		}
 
@@ -116,18 +114,62 @@ namespace Hilo.DialogueSystem
 		/// <param name="page"> page to draw </param>
 		public void ShowPage(Page page)
 		{
+			if (audioSource)
+				audioSource.Stop();
 			currentPage = dialogue.pages.IndexOf(page);
 
 			SetText(page.text);
-			nextButton.SetText(page.hasCustomNextButtonText ? page.customNextButtonText : defaultNextText);
-			previousButton.SetText(page.hasCustomPreviousButtonText ? page.customPreviousButtonText : defaultPreviousText);
-			previousButton.gameObject.SetActive(currentPage > 0);
+
+			SetupAnswersButtons(page);
 			if (pageEvents.ContainsKey(currentPage))
 				pageEvents[currentPage].Invoke();
 			if (page.clip != null && audioSource != null)
 			{
 				audioSource.Stop();
 				audioSource.PlayOneShot(page.clip);
+			}
+		}
+
+		private void SetupAnswersButtons(Page page)
+		{
+			buttonsParent.ClearChilds();
+			for (int i = 0; i < page.answers.Count; i++)
+				CreateButton(page.answers[i], i);
+		}
+
+		private void CreateButton(Answer answer, int answerIndex)
+		{
+			baseDialogueButton<T> buttonInstance = Instantiate(buttonPrefab, buttonsParent);
+
+			buttonInstance.Setup(answer);
+			buttonInstance.OnClick.AddListener((a) => {
+				AnswerHandler(a);
+				if (answerEvents.ContainsKey(currentPage))
+				{
+					answerEvents[currentPage][answerIndex].Invoke();
+				}
+			});
+		}
+
+		private void AnswerHandler(Answer answer)
+		{
+			switch (answer.action)
+			{
+				case Answer.AnswerAction.Previous:
+					NextPage(-1);
+					break;
+				case Answer.AnswerAction.Next:
+					NextPage();
+					break;
+				case Answer.AnswerAction.SetPage:
+					ShowPage(answer.setPageValue);
+					break;
+				case Answer.AnswerAction.End:
+					EndDialogue();
+					break;
+				default:
+				case Answer.AnswerAction.None:
+					break;
 			}
 		}
 
@@ -146,19 +188,14 @@ namespace Hilo.DialogueSystem
 			get => dialogue;
 		}
 
-		public string DefaultPreviousButtonText
-		{
-			get => defaultPreviousText;
-		}
-
-		public string DefaultNextButtonText
-		{
-			get => defaultNextText;
-		}
-
-		public GenericDictionary<int, UnityEvent> CustomEvents
+		public GenericDictionary<int, UnityEvent> PageEvents
 		{
 			get => pageEvents;
+		}
+
+		public GenericDictionary<int, List<UnityEvent>> AnswerEvents
+		{
+			get => answerEvents;
 		}
 #endregion
 

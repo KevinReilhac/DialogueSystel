@@ -70,26 +70,78 @@ namespace Hilo.DialogueSystem
 
 			GUI.enabled = false;
 			EditorGUILayout.TextArea(page.text, GUILayout.MinHeight(100));
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.TextField(page.hasCustomPreviousButtonText ? page.customPreviousButtonText : dialogueDisplayer.DefaultPreviousButtonText);
-			EditorGUILayout.TextField(page.hasCustomNextButtonText ? page.customNextButtonText : dialogueDisplayer.DefaultNextButtonText);
-			EditorGUILayout.EndHorizontal();
+			DrawAnswers(page.answers);
 			GUI.enabled = true;
 
 			CustomEventsDrawer(dialogueDisplayer, page);
-			if (GUILayout.Button("ShowPage"))
-				dialogueDisplayer.ShowPage(currentPageIndex);
+		}
+
+		private void DrawAnswers(List<Answer> answers)
+		{
+			EditorGUILayout.BeginHorizontal();
+			foreach (Answer answer in answers)
+				EditorGUILayout.TextField(answer.text);
+			EditorGUILayout.EndHorizontal();
 		}
 
 		private void CustomEventsDrawer(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
 		{
-			if (!dialogueDisplayer.CustomEvents.ContainsKey(currentPageIndex))
+			DrawPageEvent(dialogueDisplayer, page);
+			DrawAnswerEvents(dialogueDisplayer, page);
+		}
+
+		private bool showAnswerEvents = false;
+		private void DrawAnswerEvents(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		{
+			showAnswerEvents = EditorGUILayout.Foldout(showAnswerEvents, "Answers events");
+
+			if (!showAnswerEvents)
+				return;
+			for (int i = 0; i < page.answers.Count; i++)
 			{
-				dialogueDisplayer.CustomEvents.Add(currentPageIndex, new UnityEvent());
+				DrawAnswerEvent(dialogueDisplayer, page, i);
+			}
+		}
+
+		private void DrawAnswerEvent(baseDialogueDisplayer<T> dialogueDisplayer, Page page, int index)
+		{
+			if (!dialogueDisplayer.AnswerEvents.ContainsKey(currentPageIndex))
+			{
+				dialogueDisplayer.AnswerEvents.Add(currentPageIndex, new List<UnityEvent>(page.answers.Count));
 				return;
 			}
-			int elementIndex = dialogueDisplayer.CustomEvents.IndexOfKey(currentPageIndex);
+
+			if (index >= dialogueDisplayer.AnswerEvents[currentPageIndex].Count)
+			{
+				while (dialogueDisplayer.AnswerEvents[currentPageIndex].Count < page.answers.Count)
+					dialogueDisplayer.AnswerEvents[currentPageIndex].Add(new UnityEvent());
+				return;
+			}
+
+			int elementIndex = dialogueDisplayer.AnswerEvents.IndexOfKey(currentPageIndex);
+
+			SerializedProperty eventListProperty = serializedObject.FindProperty("answerEvents")
+				.FindPropertyRelative("list")
+				.GetArrayElementAtIndex(elementIndex)
+				.FindPropertyRelative("Value");
+
+			if (index >= eventListProperty.arraySize)
+				return;
+
+			SerializedProperty eventProperty = eventListProperty.GetArrayElementAtIndex(index); 
+
+			EditorGUILayout.PropertyField(eventProperty, new GUIContent($" On answer \"{ page.answers[index].text }\" custom event"));
+			serializedObject.ApplyModifiedProperties();
+		}
+
+		private void DrawPageEvent(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		{
+			if (!dialogueDisplayer.PageEvents.ContainsKey(currentPageIndex))
+			{
+				dialogueDisplayer.PageEvents.Add(currentPageIndex, new UnityEvent());
+				return;
+			}
+			int elementIndex = dialogueDisplayer.PageEvents.IndexOfKey(currentPageIndex);
 
 			SerializedProperty eventProperty = serializedObject.FindProperty("pageEvents")
 				.FindPropertyRelative("list")
