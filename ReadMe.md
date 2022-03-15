@@ -23,6 +23,7 @@ Example sample contains prefabs and scene you can you to undersand how the packa
 [![Create-Dialogue.jpg](https://i.postimg.cc/qRSw3FrZ/Create-Dialogue.jpg)](https://postimg.cc/dkRGM4L8)
 ### Writing it
 [![Write-dialogue-Longer.gif](https://i.postimg.cc/fb7w34hB/Write-dialogue-Longer.gif)](https://postimg.cc/yJdq5bxZ)
+
 Answers can do different actions :
 - Next (goto next page)
 - Previous (goto previous page)
