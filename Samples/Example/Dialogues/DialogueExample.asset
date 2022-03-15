@@ -10,66 +10,63 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9b224e119829c34d85a14187c4a3004, type: 3}
-  m_Name: DialogueExemple
+  m_Name: DialogueExample
   m_EditorClassIdentifier: 
   pages:
   - text: This is an exemple of the Hilo Dialogue System.
     answers:
-    - text: "Pr\xE9cedent"
+    - text: Back
       action: 2
       setPageValue: 0
-    - text: Suivant
+    - text: Next
       action: 1
       setPageValue: 0
     clip: {fileID: 0}
   - text: You can do a lot of stuff with it.
     answers:
-    - text: "Pr\xE9cedent"
+    - text: Back
       action: 2
       setPageValue: 0
-    - text: Suivant
+    - text: Next
       action: 1
-      setPageValue: 0
-    - text: D
-      action: 0
       setPageValue: 0
     clip: {fileID: 0}
   - text: Like spawning objects.
     answers:
-    - text: "Pr\xE9cedent"
+    - text: Back
       action: 2
       setPageValue: 0
-    - text: Suivant
+    - text: Next
       action: 1
       setPageValue: 0
     clip: {fileID: 0}
   - text: Or playing sounds or voices
     answers:
-    - text: "Pr\xE9cedent"
+    - text: Back
       action: 2
       setPageValue: 0
-    - text: Suivant
+    - text: Next
       action: 1
+      setPageValue: 0
+    clip: {fileID: 0}
+  - text: Different answer behaviours
+    answers:
+    - text: Back
+      action: 2
+      setPageValue: 0
+    - text: Restart
+      action: 3
+      setPageValue: 0
+    - text: End
+      action: 4
       setPageValue: 0
     clip: {fileID: 0}
   - text: BOOM!
     answers:
-    - text: "Pr\xE9cedent"
+    - text: Back
       action: 2
       setPageValue: 0
-    - text: Suivant
+    - text: CUSTOM BUTTONNNN
       action: 1
       setPageValue: 0
     clip: {fileID: 8300000, guid: 6bdd0fcf672b41c4aa3b4698ae8cded4, type: 3}
-  - text: iugyutuygyuiyiu
-    answers:
-    - text: "Pr\xE9cedent"
-      action: 2
-      setPageValue: 0
-    - text: Suivant
-      action: 3
-      setPageValue: 3
-    - text: custom
-      action: 0
-      setPageValue: 0
-    clip: {fileID: 0}

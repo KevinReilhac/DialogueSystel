@@ -45,6 +45,11 @@ namespace Hilo.DialogueSystem
 			get => onClick;
 		}
 
+		public void SetInteractable(bool value)
+		{
+			button.interactable = value;
+		}
+
 		abstract public void SetText(string textValue);
 	}
 }

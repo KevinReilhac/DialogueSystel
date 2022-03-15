@@ -51,6 +51,6 @@ namespace Hilo.DialogueSystem
 	[CreateAssetMenu(fileName = "Dialogue", menuName = "DialogueSystem/Dialogue")]
 	public class SO_Dialogue : ScriptableObject
 	{
-		[SerializeField] public List<Page> pages = new List<Page>();
+		[SerializeField] public List<Page> pages = new List<Page>() {new Page()};
 	}
 }

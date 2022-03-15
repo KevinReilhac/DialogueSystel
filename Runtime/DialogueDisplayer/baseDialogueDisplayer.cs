@@ -134,14 +134,22 @@ namespace Hilo.DialogueSystem
 		{
 			buttonsParent.ClearChilds();
 			for (int i = 0; i < page.answers.Count; i++)
-				CreateButton(page.answers[i], i);
+				CreateButton(page.answers[i], i, dialogue.pages.IndexOf(page));
 		}
 
-		private void CreateButton(Answer answer, int answerIndex)
+		private void CreateButton(Answer answer, int answerIndex, int pageIndex)
 		{
 			baseDialogueButton<T> buttonInstance = Instantiate(buttonPrefab, buttonsParent);
+			bool interactable = true;
+
+			if (answer.action == Answer.AnswerAction.Previous && pageIndex == 0 ||
+				answer.action == Answer.AnswerAction.Next && pageIndex >= dialogue.pages.Count - 1)
+				interactable = false;
 
 			buttonInstance.Setup(answer);
+			buttonInstance.SetInteractable(interactable);
+			if (interactable == false)
+				return;
 			buttonInstance.OnClick.AddListener((a) => {
 				AnswerHandler(a);
 				if (answerEvents.ContainsKey(currentPage))

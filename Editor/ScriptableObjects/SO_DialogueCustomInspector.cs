@@ -51,8 +51,7 @@ namespace Hilo.DialogueSystem
 			int pageIndex = dialogue.pages.IndexOf(page);
 
 			DrawAnswers(page);
-			EditorExtentions.Header("Audio");
-			page.clip = EditorGUILayout.ObjectField("AudioClip", page.clip, typeof(AudioClip), false) as AudioClip;
+			page.clip = EditorGUILayout.ObjectField(page.clip, typeof(AudioClip), false) as AudioClip;
 			EditorGUILayout.Space();
 			DrawMovePageButtons(page);
 			if (GUILayout.Button("Delete") && DeleteConfirmation(page.text))
@@ -64,10 +63,10 @@ namespace Hilo.DialogueSystem
 			int pageIndex = dialogue.pages.IndexOf(page);
 			EditorGUILayout.BeginHorizontal();
 			GUI.enabled = pageIndex < dialogue.pages.Count - 1;
-			if (GUILayout.Button("Move down"))
+			if (GUILayout.Button("Move page down"))
 				PageMove(page, + 1);
 			GUI.enabled = pageIndex > 0;
-			if (GUILayout.Button("Move up"))
+			if (GUILayout.Button("Move page up"))
 				PageMove(page, - 1);
 			EditorGUILayout.EndHorizontal();
 			GUI.enabled = true;
@@ -90,7 +89,10 @@ namespace Hilo.DialogueSystem
 			int pageIndex = dialogue.pages.IndexOf(page);
 
 			if (!answersLists.ContainsKey(pageIndex))
+			{
 				answersLists.Add(pageIndex, CreateNewReorderableList(page.answers, pageIndex));
+				return;
+			}
 
 			serializedObject.Update();
 			answersLists[pageIndex].DoLayoutList();
@@ -109,9 +111,13 @@ namespace Hilo.DialogueSystem
 
 		private SerializedProperty GetAnswerListSerializeProperty(int pageIndex)
 		{
-			return serializedObject.FindProperty("pages")
-				.GetArrayElementAtIndex(pageIndex)
-				.FindPropertyRelative("answers");
+			SerializedProperty pages = serializedObject.FindProperty("pages");
+
+			if (pages.arraySize <= pageIndex)
+				return (null);
+
+			return (pages.GetArrayElementAtIndex(pageIndex)
+				.FindPropertyRelative("answers"));
 		}
 
 		private void DrawAnswerListItem(Rect rect, int index, bool isActive, bool isFocused, int pageIndex)

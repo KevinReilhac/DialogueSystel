@@ -20,23 +20,25 @@ git@bitbucket.org:kreilhac/unity-dialogue-system.git
 Example sample contains prefabs and scene you can you to undersand how the package works
 
 ### Create a dialogue
-![Create dialogue from create asset menu](https://i.postimg.cc/SK31d5H7/Create-Dialogue.jpg)
-
+[![Create-Dialogue.jpg](https://i.postimg.cc/qRSw3FrZ/Create-Dialogue.jpg)](https://postimg.cc/dkRGM4L8)
 ### Writing it
-![Writing some text](https://i.postimg.cc/zXYSJhsj/writing-Dialogue.gif)
-
-you can set an audio clip for each pages of your dialogue and write a custom
-next and previous button text
+[![Write-dialogue-Longer.gif](https://i.postimg.cc/fb7w34hB/Write-dialogue-Longer.gif)](https://postimg.cc/yJdq5bxZ)
+Answers can do different actions :
+- Next (goto next page)
+- Previous (goto previous page)
+- SetPage (set page in parameter)
+- Custom (do nothing use this when you juste need to call an UnityEvent)
+- End (end the dialogue)
+You can also set an audio clip for each pages of your dialogue
 
 ### Add a dialogue displayer
+[![Create-Dialogue-Displayer.gif](https://i.postimg.cc/nV7X2PXF/Create-Dialogue-Displayer.gif)](https://postimg.cc/pyWVXkQ4)
 You can use the prefabs from the exemple sample folder.
 
-[![Create-Dialogue-Displayer.gif](https://i.postimg.cc/nV7X2PXF/Create-Dialogue-Displayer.gif)](https://postimg.cc/pyWVXkQ4)
-
 ### Setting up
-[![Setup-Dialogue-Displayer.gif](https://i.postimg.cc/65jHBcXv/Setup-Dialogue-Displayer.gif)](https://postimg.cc/RNt1RcqS)
+[![Configure-Displayer.gif](https://i.postimg.cc/CKfV83TW/Configure-Displayer.gif)](https://postimg.cc/Mcx42rGD)
 
-you can create an event for each dialogue pages.
+You can create an event for each dialogue pages and answers.
 
 ### And it work !
-[![Working-exemple.gif](https://i.postimg.cc/t4HCB3sL/Working-exemple.gif)](https://postimg.cc/PP2jx8z4)
+[![it-Work-Fixeed.gif](https://i.postimg.cc/FF39s98t/it-Work-Fixeed.gif)](https://postimg.cc/F1FtTQhG)
