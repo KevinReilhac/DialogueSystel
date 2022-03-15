@@ -168,7 +168,7 @@ namespace Hilo.DialogueSystem
 					EndDialogue();
 					break;
 				default:
-				case Answer.AnswerAction.None:
+				case Answer.AnswerAction.Custom:
 					break;
 			}
 		}

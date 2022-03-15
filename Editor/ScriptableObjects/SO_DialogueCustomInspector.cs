@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 using Hilo.Utils;
 
 namespace Hilo.DialogueSystem
@@ -21,55 +22,102 @@ namespace Hilo.DialogueSystem
 	[CustomEditor(typeof(SO_Dialogue))]
 	public class SO_DialogueCustomInspector : Editor
 	{
+		private Dictionary<int, ReorderableList> answersLists = new Dictionary<int, ReorderableList>();
+		SO_Dialogue dialogue;
+
+		private void OnEnable()
+		{
+			dialogue = target as SO_Dialogue;
+		}
+
 		public override void OnInspectorGUI()
 		{
-			SO_Dialogue dialogueObject = target as SO_Dialogue;
-			EditorUtility.SetDirty(dialogueObject);
+			EditorUtility.SetDirty(dialogue);
 
-			for (int i = 0; i < dialogueObject.pages.Count; i++)
+			for (int i = 0; i < dialogue.pages.Count; i++)
 			{
-				EditorGUILayout.LabelField(string.Format("Page {0}/{1}", i + 1, dialogueObject.pages.Count));
-				PageDrawer(dialogueObject, dialogueObject.pages[i]);
+				EditorGUILayout.LabelField(string.Format("Page {0}/{1}", i + 1, dialogue.pages.Count));
+				PageDrawer(dialogue.pages[i]);
 				EditorExtentions.DrawUILine(Color.black);
 			}
 
 			if (GUILayout.Button("Add Page"))
-				dialogueObject.pages.Add(new Page());
+				dialogue.pages.Add(new Page());
 		}
 
-		private void PageDrawer(SO_Dialogue dialogue, Page page)
+		private void PageDrawer(Page page)
 		{
 			page.text = EditorGUILayout.TextArea(page.text, GUILayout.MinHeight(100));
 			int pageIndex = dialogue.pages.IndexOf(page);
 
-			EditorExtentions.Header("Answers");
-			DrawAnswers(dialogue, page);
-
+			DrawAnswers(page);
+			EditorExtentions.Header("Audio");
 			page.clip = EditorGUILayout.ObjectField("AudioClip", page.clip, typeof(AudioClip), false) as AudioClip;
-			if (GUILayout.Button("Remove") && DeleteConfirmation(page.text))
+			EditorGUILayout.Space();
+			if (GUILayout.Button("Delete") && DeleteConfirmation(page.text))
 				dialogue.pages.Remove(page);
 		}
 
-		private void DrawAnswers(SO_Dialogue dialogue, Page page)
+		private void DrawAnswers(Page page)
 		{
-			List<Answer> answers = new List<Answer>(page.answers);
-			foreach (Answer answer in answers)
-				DrawAnswer(dialogue, page, answer);
-			EditorGUILayout.Space();
-			if (GUILayout.Button("Add answer"))
-				page.answers.Add(new Answer("custom", Answer.AnswerAction.None));
+			int pageIndex = dialogue.pages.IndexOf(page);
+
+			if (!answersLists.ContainsKey(pageIndex))
+				answersLists.Add(pageIndex, CreateNewReorderableList(page.answers, pageIndex));
+
+			serializedObject.Update();
+			answersLists[pageIndex].DoLayoutList();
+			serializedObject.ApplyModifiedProperties();
 		}
 
-		private void DrawAnswer(SO_Dialogue dialogue, Page page, Answer answer)
+		private ReorderableList CreateNewReorderableList(List<Answer> answers, int pageIndex)
 		{
-			EditorGUILayout.BeginHorizontal();
-			answer.text = GUILayout.TextField(answer.text, GUILayout.Width(300f));
-			answer.action = (Answer.AnswerAction)EditorGUILayout.EnumPopup(answer.action);
-			if (answer.action == Answer.AnswerAction.SetPage)
-				answer.setPageValue = Mathf.Clamp(EditorGUILayout.IntField(answer.setPageValue, GUILayout.Width(50f)), 0, dialogue.pages.Count - 1);
-			if (GUILayout.Button("Delete", GUILayout.Width(100f)))
-				page.answers.Remove(answer);
-			EditorGUILayout.EndHorizontal();
+			ReorderableList list = new ReorderableList(serializedObject, GetAnswerListSerializeProperty(pageIndex), true, true, true, true);
+
+			list.drawElementCallback = (r, i, a, f) => DrawAnswerListItem(r, i, a, f, pageIndex);
+			list.drawHeaderCallback = (r) => EditorGUI.LabelField(r, "Answers");
+
+
+			return (list);
+		}
+
+		private SerializedProperty GetAnswerListSerializeProperty(int pageIndex)
+		{
+			return serializedObject.FindProperty("pages")
+				.GetArrayElementAtIndex(pageIndex)
+				.FindPropertyRelative("answers");
+		}
+
+		private void DrawAnswerListItem(Rect rect, int index, bool isActive, bool isFocused, int pageIndex)
+		{
+			ReorderableList list = answersLists[pageIndex];
+			SerializedProperty answer = list.serializedProperty.GetArrayElementAtIndex(index);
+			SerializedProperty text = answer.FindPropertyRelative("text");
+			SerializedProperty action = answer.FindPropertyRelative("action");
+			SerializedProperty setPageValue = answer.FindPropertyRelative("setPageValue");
+
+			EditorGUI.PropertyField(
+				new Rect(rect.x, rect.y, 250, EditorGUIUtility.singleLineHeight),
+				text,
+				GUIContent.none
+			);
+
+			EditorGUI.PropertyField(
+				new Rect(rect.x + 255, rect.y, 100, EditorGUIUtility.singleLineHeight),
+				action,
+				GUIContent.none
+			);
+
+			if (action.intValue == (int)Answer.AnswerAction.SetPage)
+			{
+				EditorGUI.PropertyField(
+					new Rect(rect.x + 360, rect.y, 30, EditorGUIUtility.singleLineHeight),
+					setPageValue,
+					GUIContent.none
+				);
+
+				setPageValue.intValue = Mathf.Clamp(setPageValue.intValue, 0, dialogue.pages.Count);
+			}
 		}
 
 		private bool DeleteConfirmation(string pageText)

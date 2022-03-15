@@ -18,7 +18,7 @@ namespace Hilo.DialogueSystem
 	{
 		public enum AnswerAction
 		{
-			None,
+			Custom,
 			Next,
 			Previous,
 			SetPage,
@@ -32,7 +32,7 @@ namespace Hilo.DialogueSystem
 		}
 
 		public string text = "";
-		public AnswerAction action = AnswerAction.None;
+		public AnswerAction action = AnswerAction.Custom;
 		public int setPageValue = 0;
 	}
 
