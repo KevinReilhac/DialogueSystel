@@ -30,6 +30,8 @@ namespace Hilo.DialogueSystem
 		[Header("Settings")]
 		[SerializeField] private SO_Dialogue dialogue = null;
 		[SerializeField] private OnEndDialogueType endDialogueType = OnEndDialogueType.Disable;
+		[SerializeField] private int startPage = 0;
+		[SerializeField] private GenericDictionary<string, string> replacers = new GenericDictionary<string, string>();
 		[Header("Prefabs")]
 		[SerializeField] private baseDialogueButton<T> buttonPrefab = null;
 		[Header("Events")]
@@ -43,6 +45,7 @@ namespace Hilo.DialogueSystem
 
 		private int currentPage = 0;
 
+#region Init
 		/// <summary>
 		/// Setting callbacks and create AudioSource if needed
 		/// </summary>
@@ -51,8 +54,13 @@ namespace Hilo.DialogueSystem
 			if (audioSource == null && IsPagesHaveAudio())
 				audioSource = gameObject.AddComponent<AudioSource>();
 
-			ShowPage(0);
 		}
+
+		private void Start()
+		{
+			ShowPage(startPage);
+		}
+
 
 		/// <summary>
 		/// Check if one of the pages have an AudioClip
@@ -68,8 +76,9 @@ namespace Hilo.DialogueSystem
 
 			return (false);
 		}
+#endregion
 
-
+#region PageDraw
 		/// <summary>
 		/// Jumping into an other page
 		/// </summary>
@@ -83,30 +92,10 @@ namespace Hilo.DialogueSystem
 		}
 
 		/// <summary>
-		/// Called when you press Next on the last page
-		/// </summary>
-		private void EndDialogue()
-		{
-			onEndDialogue.Invoke();
-			switch (endDialogueType)
-			{
-				case (OnEndDialogueType.Destroy) :
-					Destroy(gameObject);
-					break;
-				case (OnEndDialogueType.Disable) :
-					gameObject.SetActive(false);
-					break;
-				case (OnEndDialogueType.Nothing) :
-					break;
-			}
-		}
-
-		/// <summary>
 		/// Draw a page from index
-		/// </summary>
+		/// /// </summary>
 		/// <param name="pageIndex"> page index to display </param>
 		public void ShowPage(int pageIndex) => ShowPage(dialogue.pages[pageIndex]);
-
 
 		/// <summary>
 		/// Draw a page from a page reference
@@ -118,7 +107,7 @@ namespace Hilo.DialogueSystem
 				audioSource.Stop();
 			currentPage = dialogue.pages.IndexOf(page);
 
-			SetText(page.text);
+			SetText(ApplyReplacers(page.text));
 
 			SetupAnswersButtons(page);
 			if (pageEvents.ContainsKey(currentPage))
@@ -158,6 +147,42 @@ namespace Hilo.DialogueSystem
 				}
 			});
 		}
+#endregion
+
+#region Events
+		/// <summary>
+		/// Called when you press Next on the last page
+		/// </summary>
+		private void EndDialogue()
+		{
+			onEndDialogue.Invoke();
+			switch (endDialogueType)
+			{
+				case (OnEndDialogueType.Destroy) :
+					Destroy(gameObject);
+					break;
+				case (OnEndDialogueType.Disable) :
+					gameObject.SetActive(false);
+					break;
+				case (OnEndDialogueType.Nothing) :
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Replace every words in replacers keys
+		/// by replacers values
+		/// </summary>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		private string ApplyReplacers(string text)
+		{
+			foreach (var item in replacers)
+				text = text.Replace(item.Key, item.Value);
+
+			return (text);
+		}
+
 
 		private void AnswerHandler(Answer answer)
 		{
@@ -180,6 +205,7 @@ namespace Hilo.DialogueSystem
 					break;
 			}
 		}
+#endregion
 
 #region AbstractMethod
 		abstract protected void SetText(string text);
@@ -207,5 +233,11 @@ namespace Hilo.DialogueSystem
 		}
 #endregion
 
+#region Publics
+		public void AddReplacer(string key, string value)
+		{
+			replacers.Add(key, value);
+		}
+#endregion
 	}
 }

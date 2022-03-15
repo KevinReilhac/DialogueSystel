@@ -25,15 +25,18 @@ Example sample contains prefabs and scene you can you to undersand how the packa
 [![Write-dialogue-Longer.gif](https://i.postimg.cc/fb7w34hB/Write-dialogue-Longer.gif)](https://postimg.cc/yJdq5bxZ)
 
 Answers can do different actions :
-- Next (goto next page)
-- Previous (goto previous page)
-- SetPage (set page in parameter)
-- Custom (do nothing use this when you juste need to call an UnityEvent)
-- End (end the dialogue)
+<ol>
+ <li><b>Next</b> (goto next page)</li>
+ <li><b>Previous</b> (goto previous page)</li>
+ <li><b>SetPage</b> set page in parameter)</li>
+ <li><b>Custom</b> (do nothing use this when you juste need to call an UnityEvent)</li>
+ <li><b>End</b> (end the dialogue)</li>
+</ol>
 You can also set an audio clip for each pages of your dialogue
 
 ### Add a dialogue displayer
 [![Create-Dialogue-Displayer.gif](https://i.postimg.cc/nV7X2PXF/Create-Dialogue-Displayer.gif)](https://postimg.cc/pyWVXkQ4)
+
 You can use the prefabs from the exemple sample folder.
 
 ### Setting up

@@ -364,6 +364,21 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 7829304468413552026, guid: 52341c5d76df15948b6fc08a0e187303,
         type: 3}
+      propertyPath: replacer.keyCollision
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829304468413552026, guid: 52341c5d76df15948b6fc08a0e187303,
+        type: 3}
+      propertyPath: replacer.list.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829304468413552026, guid: 52341c5d76df15948b6fc08a0e187303,
+        type: 3}
+      propertyPath: replacers.list.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829304468413552026, guid: 52341c5d76df15948b6fc08a0e187303,
+        type: 3}
       propertyPath: pageEvents.list.Array.size
       value: 3
       objectReference: {fileID: 0}
