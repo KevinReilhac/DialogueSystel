@@ -54,8 +54,35 @@ namespace Hilo.DialogueSystem
 			EditorExtentions.Header("Audio");
 			page.clip = EditorGUILayout.ObjectField("AudioClip", page.clip, typeof(AudioClip), false) as AudioClip;
 			EditorGUILayout.Space();
+			DrawMovePageButtons(page);
 			if (GUILayout.Button("Delete") && DeleteConfirmation(page.text))
 				dialogue.pages.Remove(page);
+		}
+
+		private void DrawMovePageButtons(Page page)
+		{
+			int pageIndex = dialogue.pages.IndexOf(page);
+			EditorGUILayout.BeginHorizontal();
+			GUI.enabled = pageIndex < dialogue.pages.Count - 1;
+			if (GUILayout.Button("Move down"))
+				PageMove(page, + 1);
+			GUI.enabled = pageIndex > 0;
+			if (GUILayout.Button("Move up"))
+				PageMove(page, - 1);
+			EditorGUILayout.EndHorizontal();
+			GUI.enabled = true;
+		}
+
+		private void PageMove(Page page, int delta)
+		{
+			int pageIndex = dialogue.pages.IndexOf(page);
+
+			if (pageIndex + delta < 0 || pageIndex + delta >= dialogue.pages.Count)
+				return;
+
+			Page tmpPage = dialogue.pages[pageIndex + delta];
+			dialogue.pages[pageIndex + delta] = page;
+			dialogue.pages[pageIndex] = tmpPage;
 		}
 
 		private void DrawAnswers(Page page)
@@ -76,7 +103,6 @@ namespace Hilo.DialogueSystem
 
 			list.drawElementCallback = (r, i, a, f) => DrawAnswerListItem(r, i, a, f, pageIndex);
 			list.drawHeaderCallback = (r) => EditorGUI.LabelField(r, "Answers");
-
 
 			return (list);
 		}
