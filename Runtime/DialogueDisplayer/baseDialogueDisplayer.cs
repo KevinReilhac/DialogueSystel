@@ -156,13 +156,13 @@ namespace Hilo.DialogueSystem
 		{
 			if (pageNumberText == null)
 				return;
-			SetPageNumberText(GetPageNumberString());
+			SetPageNumberText(GetPageNumberString(currentPage + 1));
 		}
 
-		public string GetPageNumberString()
+		public string GetPageNumberString(int pageNumber)
 		{
 			string replaces = pageNumberTextFormat.
-				Replace(CURRENT_PAGE_REPLACE_TEXT, (currentPage + 1).ToString()).
+				Replace(CURRENT_PAGE_REPLACE_TEXT, pageNumber.ToString()).
 				Replace(MAX_PAGE_REPLACE_TEXT, dialogue.pages.Count.ToString());
 
 			return (replaces);

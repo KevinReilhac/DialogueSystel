@@ -73,7 +73,7 @@ namespace Hilo.DialogueSystem
 		{
 
 			GUI.enabled = false;
-			EditorGUILayout.TextArea(dialogueDisplayer.GetPageNumberString());
+			EditorGUILayout.TextArea(dialogueDisplayer.GetPageNumberString(currentPageIndex + 1));
 			EditorGUILayout.TextArea(dialogueDisplayer.ApplyReplacers(page.text), GUILayout.MinHeight(100));
 			DrawAnswers(page.answers);
 			GUI.enabled = true;
