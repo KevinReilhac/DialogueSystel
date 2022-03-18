@@ -20,6 +20,8 @@ namespace Hilo.DialogueSystem
 	/// <typeparam name="T"> UI Text type </typeparam>
 	public abstract class baseDialogueDisplayer<T> : MonoBehaviour where T : MonoBehaviour
 	{
+		private const string CURRENT_PAGE_REPLACE_TEXT = "{CURRENT}";
+		private const string MAX_PAGE_REPLACE_TEXT = "{MAX}";
 		public enum OnEndDialogueType
 		{
 			Nothing,
@@ -30,6 +32,7 @@ namespace Hilo.DialogueSystem
 		[Header("Settings")]
 		[SerializeField] private SO_Dialogue dialogue = null;
 		[SerializeField] private OnEndDialogueType endDialogueType = OnEndDialogueType.Disable;
+		[SerializeField] private string pageNumberTextFormat = CURRENT_PAGE_REPLACE_TEXT + '/' + MAX_PAGE_REPLACE_TEXT;
 		[SerializeField] private int startPage = 0;
 		[SerializeField] private GenericDictionary<string, string> replacers = new GenericDictionary<string, string>();
 		[Header("Prefabs")]
@@ -40,6 +43,7 @@ namespace Hilo.DialogueSystem
 		[SerializeField, HideInInspector] private GenericDictionary<int, List<UnityEvent>> answerEvents = null;
 		[Header("References")]
 		[SerializeField] protected T text = null;
+		[SerializeField] protected T pageNumberText = null;
 		[SerializeField] private AudioSource audioSource = null;
 		[SerializeField] private Transform buttonsParent = null;
 
@@ -110,6 +114,7 @@ namespace Hilo.DialogueSystem
 			SetText(ApplyReplacers(page.text));
 
 			SetupAnswersButtons(page);
+			UpdatePageNumberText();
 			if (pageEvents.ContainsKey(currentPage))
 				pageEvents[currentPage].Invoke();
 			if (page.clip != null && audioSource != null)
@@ -131,8 +136,7 @@ namespace Hilo.DialogueSystem
 			baseDialogueButton<T> buttonInstance = Instantiate(buttonPrefab, buttonsParent);
 			bool interactable = true;
 
-			if (answer.action == Answer.AnswerAction.Previous && pageIndex == 0 ||
-				answer.action == Answer.AnswerAction.Next && pageIndex >= dialogue.pages.Count - 1)
+			if (answer.action == Answer.AnswerAction.Previous && pageIndex == 0)
 				interactable = false;
 
 			buttonInstance.Setup(answer);
@@ -146,6 +150,22 @@ namespace Hilo.DialogueSystem
 					answerEvents[currentPage][answerIndex].Invoke();
 				}
 			});
+		}
+
+		private void UpdatePageNumberText()
+		{
+			if (pageNumberText == null)
+				return;
+			SetPageNumberText(GetPageNumberString());
+		}
+
+		public string GetPageNumberString()
+		{
+			string replaces = pageNumberTextFormat.
+				Replace(CURRENT_PAGE_REPLACE_TEXT, (currentPage + 1).ToString()).
+				Replace(MAX_PAGE_REPLACE_TEXT, dialogue.pages.Count.ToString());
+
+			return (replaces);
 		}
 #endregion
 
@@ -175,10 +195,14 @@ namespace Hilo.DialogueSystem
 		/// </summary>
 		/// <param name="text"></param>
 		/// <returns></returns>
-		private string ApplyReplacers(string text)
+		public string ApplyReplacers(string text)
 		{
 			foreach (var item in replacers)
+			{
+				if (item.Key == null || item.Key == "")
+					continue;
 				text = text.Replace(item.Key, item.Value);
+			}
 
 			return (text);
 		}
@@ -195,7 +219,7 @@ namespace Hilo.DialogueSystem
 					NextPage();
 					break;
 				case Answer.AnswerAction.SetPage:
-					ShowPage(answer.setPageValue);
+					ShowPage(answer.setPageValue - 1);
 					break;
 				case Answer.AnswerAction.End:
 					EndDialogue();
@@ -209,6 +233,7 @@ namespace Hilo.DialogueSystem
 
 #region AbstractMethod
 		abstract protected void SetText(string text);
+		abstract protected void SetPageNumberText(string text);
 #endregion
 
 #region Getters

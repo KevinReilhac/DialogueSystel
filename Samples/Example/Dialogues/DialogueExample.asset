@@ -40,7 +40,7 @@ MonoBehaviour:
       action: 1
       setPageValue: 0
     clip: {fileID: 0}
-  - text: Or playing sounds or voices
+  - text: Or playing sounds or voices.
     answers:
     - text: Back
       action: 2
@@ -56,9 +56,12 @@ MonoBehaviour:
       setPageValue: 0
     - text: Restart
       action: 3
-      setPageValue: 0
+      setPageValue: 1
     - text: End
       action: 4
+      setPageValue: 0
+    - text: Next
+      action: 1
       setPageValue: 0
     clip: {fileID: 0}
   - text: BOOM!
@@ -66,7 +69,7 @@ MonoBehaviour:
     - text: Back
       action: 2
       setPageValue: 0
-    - text: CUSTOM BUTTONNNN
+    - text: Next
       action: 1
       setPageValue: 0
     clip: {fileID: 8300000, guid: 6bdd0fcf672b41c4aa3b4698ae8cded4, type: 3}

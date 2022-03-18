@@ -22,5 +22,12 @@ namespace Hilo.DialogueSystem
 			text.SetText(value);
 			text.gameObject.SetActive(true);
 		}
+
+		protected override void SetPageNumberText(string value)
+		{
+			pageNumberText.gameObject.SetActive(false);
+			pageNumberText.SetText(value);
+			pageNumberText.gameObject.SetActive(true);
+		}
 	}
 }

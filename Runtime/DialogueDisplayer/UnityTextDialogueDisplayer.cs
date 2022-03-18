@@ -20,5 +20,10 @@ namespace Hilo.DialogueSystem
 		{
 			text.text = value;
 		}
+
+		protected override void SetPageNumberText(string value)
+		{
+			pageNumberText.text = value;
+		}
 	}
 }

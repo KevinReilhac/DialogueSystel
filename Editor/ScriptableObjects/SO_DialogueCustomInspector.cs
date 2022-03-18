@@ -148,7 +148,7 @@ namespace Hilo.DialogueSystem
 					GUIContent.none
 				);
 
-				setPageValue.intValue = Mathf.Clamp(setPageValue.intValue, 0, dialogue.pages.Count);
+				setPageValue.intValue = Mathf.Clamp(setPageValue.intValue, 1, dialogue.pages.Count);
 			}
 		}
 

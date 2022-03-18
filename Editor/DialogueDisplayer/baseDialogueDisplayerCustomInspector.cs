@@ -22,32 +22,36 @@ namespace Hilo.DialogueSystem
 	public class baseDialogueDisplayerCustomInspector<T> : Editor where T : MonoBehaviour
 	{
 		private int currentPageIndex = 0;
+		private baseDialogueDisplayer<T> dialogueDisplayer = null;
+
+		private void OnEnable()
+		{
+			dialogueDisplayer = target as baseDialogueDisplayer<T>;
+		}
 
 		public override void OnInspectorGUI()
 		{
 			base.OnInspectorGUI();
-			baseDialogueDisplayer<T> dialogueDisplayer = target as baseDialogueDisplayer<T>;
 
 			if (dialogueDisplayer.Dialogue != null && dialogueDisplayer.Dialogue.pages.Count > 0)
 			{
 				EditorExtentions.DrawUILine(Color.black);
 				EditorExtentions.Header("Pages");
-				PageSectionDrawer(dialogueDisplayer);
+				PageSectionDrawer();
 			}
 		}
 
-		private void PageSectionDrawer(baseDialogueDisplayer<T> dialogueDisplayer)
+		private void PageSectionDrawer()
 		{
-			PageIndexSelectionDrawer(dialogueDisplayer);
-			PageDrawer(dialogueDisplayer, dialogueDisplayer.Dialogue.pages[currentPageIndex]);
-
+			PageIndexSelectionDrawer();
+			PageDrawer(dialogueDisplayer.Dialogue.pages[currentPageIndex]);
 
 			EditorGUILayout.Space();
 			if (GUILayout.Button("Open dialogue"))
 				Selection.activeObject = dialogueDisplayer.Dialogue;
 		}
 
-		private void PageIndexSelectionDrawer(baseDialogueDisplayer<T> dialogueDisplayer)
+		private void PageIndexSelectionDrawer()
 		{
 			currentPageIndex = EditorGUILayout.IntField("Page", currentPageIndex + 1) - 1;
 			EditorGUILayout.BeginHorizontal();
@@ -65,15 +69,16 @@ namespace Hilo.DialogueSystem
 			currentPageIndex = Mathf.Clamp(currentPageIndex, 0, dialogueDisplayer.Dialogue.pages.Count - 1);
 		}
 
-		private void PageDrawer(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		private void PageDrawer(Page page)
 		{
 
 			GUI.enabled = false;
-			EditorGUILayout.TextArea(page.text, GUILayout.MinHeight(100));
+			EditorGUILayout.TextArea(dialogueDisplayer.GetPageNumberString());
+			EditorGUILayout.TextArea(dialogueDisplayer.ApplyReplacers(page.text), GUILayout.MinHeight(100));
 			DrawAnswers(page.answers);
 			GUI.enabled = true;
 
-			CustomEventsDrawer(dialogueDisplayer, page);
+			CustomEventsDrawer(page);
 		}
 
 		private void DrawAnswers(List<Answer> answers)
@@ -84,14 +89,14 @@ namespace Hilo.DialogueSystem
 			EditorGUILayout.EndHorizontal();
 		}
 
-		private void CustomEventsDrawer(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		private void CustomEventsDrawer(Page page)
 		{
-			DrawPageEvent(dialogueDisplayer, page);
-			DrawAnswerEvents(dialogueDisplayer, page);
+			DrawPageEvent(page);
+			DrawAnswerEvents(page);
 		}
 
 		private bool showAnswerEvents = false;
-		private void DrawAnswerEvents(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		private void DrawAnswerEvents(Page page)
 		{
 			showAnswerEvents = EditorGUILayout.Foldout(showAnswerEvents, "Answers events");
 
@@ -99,11 +104,11 @@ namespace Hilo.DialogueSystem
 				return;
 			for (int i = 0; i < page.answers.Count; i++)
 			{
-				DrawAnswerEvent(dialogueDisplayer, page, i);
+				DrawAnswerEvent(page, i);
 			}
 		}
 
-		private void DrawAnswerEvent(baseDialogueDisplayer<T> dialogueDisplayer, Page page, int index)
+		private void DrawAnswerEvent(Page page, int index)
 		{
 			if (!dialogueDisplayer.AnswerEvents.ContainsKey(currentPageIndex))
 			{
@@ -134,7 +139,7 @@ namespace Hilo.DialogueSystem
 			serializedObject.ApplyModifiedProperties();
 		}
 
-		private void DrawPageEvent(baseDialogueDisplayer<T> dialogueDisplayer, Page page)
+		private void DrawPageEvent(Page page)
 		{
 			if (!dialogueDisplayer.PageEvents.ContainsKey(currentPageIndex))
 			{
