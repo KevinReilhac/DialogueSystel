@@ -256,12 +256,10 @@ namespace Hilo.DialogueSystem
 		{
 			get => answerEvents;
 		}
-#endregion
 
-#region Publics
-		public void AddReplacer(string key, string value)
+		public GenericDictionary<string, string> Replacers
 		{
-			replacers.Add(key, value);
+			get => replacers;
 		}
 #endregion
 	}
