@@ -54,6 +54,8 @@ namespace Hilo.DialogueSystem
 				EditorGUILayout.PropertyField(wrintingAnimationTextSpeed, new GUIContent("Use wrinting text animation"));
 				wrintingAnimationTextSpeed.floatValue = Mathf.Max(0.01f, wrintingAnimationTextSpeed.floatValue);
 			}
+
+			serializedObject.ApplyModifiedProperties();
 		}
 
 		private void PageSectionDrawer()
