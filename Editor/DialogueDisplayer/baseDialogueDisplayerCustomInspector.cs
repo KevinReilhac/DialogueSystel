@@ -33,11 +33,26 @@ namespace Hilo.DialogueSystem
 		{
 			base.OnInspectorGUI();
 
+			WrintingTextAnimationDrawer();
 			if (dialogueDisplayer.Dialogue != null && dialogueDisplayer.Dialogue.pages.Count > 0)
 			{
 				EditorExtentions.DrawUILine(Color.black);
 				EditorExtentions.Header("Pages");
 				PageSectionDrawer();
+			}
+		}
+
+		private void WrintingTextAnimationDrawer()
+		{
+			EditorExtentions.Header("Text animation");
+			SerializedProperty useWritingTextAnimation = serializedObject.FindProperty("useWrintingTextAnimation");
+			SerializedProperty wrintingAnimationTextSpeed = serializedObject.FindProperty("wrintingTextAnimationTextSpeed");
+
+			EditorGUILayout.PropertyField(useWritingTextAnimation, new GUIContent("Use wrinting text animation"));
+			if (useWritingTextAnimation.boolValue)
+			{
+				EditorGUILayout.PropertyField(wrintingAnimationTextSpeed, new GUIContent("Use wrinting text animation"));
+				wrintingAnimationTextSpeed.floatValue = Mathf.Max(0.01f, wrintingAnimationTextSpeed.floatValue);
 			}
 		}
 

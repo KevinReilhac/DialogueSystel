@@ -17,8 +17,10 @@ namespace Hilo.Utils
 			EditorGUI.DrawRect(r, color);
 		}
 
-		public static void Header(string label)
+		public static void Header(string label, bool space = true)
 		{
+			if (space)
+				EditorGUILayout.Space();
 			EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
 		}
 	}

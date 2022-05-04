@@ -34,6 +34,8 @@ namespace Hilo.DialogueSystem
 		[SerializeField] private OnEndDialogueType endDialogueType = OnEndDialogueType.Disable;
 		[SerializeField] private string pageNumberTextFormat = CURRENT_PAGE_REPLACE_TEXT + '/' + MAX_PAGE_REPLACE_TEXT;
 		[SerializeField] private int startPage = 0;
+		[SerializeField, HideInInspector] private bool useWrintingTextAnimation = false;
+		[SerializeField, HideInInspector] private float wrintingTextAnimationTextSpeed = 15f;
 		[SerializeField] private GenericDictionary<string, string> replacers = new GenericDictionary<string, string>();
 		[Header("Prefabs")]
 		[SerializeField] private baseDialogueButton<T> buttonPrefab = null;
@@ -110,8 +112,12 @@ namespace Hilo.DialogueSystem
 			if (audioSource)
 				audioSource.Stop();
 			currentPage = dialogue.pages.IndexOf(page);
+			string replacedText = ApplyReplacers(page.text);
 
-			SetText(ApplyReplacers(page.text));
+			if (useWrintingTextAnimation)
+				WrintingTextAnimation(replacedText);
+			else
+				SetText(ApplyReplacers(page.text));
 
 			SetupAnswersButtons(page);
 			UpdatePageNumberText();
@@ -152,6 +158,25 @@ namespace Hilo.DialogueSystem
 			});
 		}
 
+		private Coroutine wrintingTextAnimationCoroutine = null;
+		private void WrintingTextAnimation(string text)
+		{
+			if (wrintingTextAnimationCoroutine != null)
+				StopCoroutine(wrintingTextAnimationCoroutine);
+
+			wrintingTextAnimationCoroutine = StartCoroutine(__WrintingTextAnimationCoroutine(text));
+		}
+
+		private IEnumerator __WrintingTextAnimationCoroutine(string text)
+		{
+			for (int c = 0; c < text.Length; c++)
+			{
+				SetText(text.Substring(0, c));
+				yield return new WaitForSeconds(1 / wrintingTextAnimationTextSpeed);
+			}
+			SetText(text);
+		}
+
 		private void UpdatePageNumberText()
 		{
 			if (pageNumberText == null)
@@ -167,6 +192,7 @@ namespace Hilo.DialogueSystem
 
 			return (replaces);
 		}
+
 #endregion
 
 #region Events
